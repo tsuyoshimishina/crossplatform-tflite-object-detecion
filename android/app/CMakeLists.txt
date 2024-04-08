@@ -1,14 +1,22 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.19)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # opencv
 set(OpenCV_STATIC ON)
 set(OpenCV_DIR $ENV{OPENCV_ANDROID}/sdk/native/jni)
 find_package(OpenCV REQUIRED)
 
-# Add tensorflowlite lib
+# Add tensorflowlite C++ lib
 set(Tensorflowlite_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../tflite-dist)
 add_library(libtensorflowlite SHARED IMPORTED)
 set_target_properties(libtensorflowlite PROPERTIES IMPORTED_LOCATION ${Tensorflowlite_DIR}/libs/android/${ANDROID_ABI}/libtensorflowlite.so)
+
+# Add tensorflowlite GPU delegate lib
+add_library(libtensorflowlite_gpu_delegate SHARED IMPORTED)
+set_target_properties(libtensorflowlite_gpu_delegate PROPERTIES IMPORTED_LOCATION ${Tensorflowlite_DIR}/libs/android/${ANDROID_ABI}/libtensorflowlite_gpu_delegate.so)
 
 # Add our native-lib library and specify the source(s)
 add_library(
@@ -43,6 +51,7 @@ find_library(android-lib android)
 target_link_libraries(
 	native-lib
 	libtensorflowlite
+	libtensorflowlite_gpu_delegate
 	${OpenCV_LIBS}
 	${android-lib}
 	${jnigraphics-lib}

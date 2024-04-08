@@ -31,6 +31,7 @@ private:
 	char *m_modelBytes = nullptr;
 	std::unique_ptr<tflite::FlatBufferModel> m_model;
 	std::unique_ptr<tflite::Interpreter> m_interpreter;
+	TfLiteDelegate *m_delegate = nullptr;
 	TfLiteTensor *m_input_tensor = nullptr;
 	TfLiteTensor *m_output_locations = nullptr;
 	TfLiteTensor *m_output_classes = nullptr;

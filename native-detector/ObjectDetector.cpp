@@ -2,6 +2,7 @@
 #include <opencv2/imgproc.hpp>
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
+#include "tensorflow/lite/delegates/gpu/delegate.h"
 
 using namespace cv;
 
@@ -13,6 +14,11 @@ ObjectDetector::ObjectDetector(const char *tfliteModel, long modelSize, bool qua
 }
 
 ObjectDetector::~ObjectDetector() {
+	if (m_delegate != nullptr) {
+		TfLiteGpuDelegateV2Delete(m_delegate);
+		m_delegate = nullptr;
+	}
+
 	if (m_modelBytes != nullptr) {
 		free(m_modelBytes);
 		m_modelBytes = nullptr;
@@ -43,6 +49,15 @@ void ObjectDetector::initDetectionModel(const char *tfliteModel, long modelSize)
 		printf("Failed to create interpreter");
 		return;
 	}
+
+	// Prepare GPU delegate
+#if 1
+	m_delegate = TfLiteGpuDelegateV2Create(nullptr);
+	if (m_interpreter->ModifyGraphWithDelegate(m_delegate) != kTfLiteOk) {
+		printf("Failed to prepare GPU delegate!");
+		return;
+	}
+#endif
 
 	// Allocate tensor buffers.
 	if (m_interpreter->AllocateTensors() != kTfLiteOk) {

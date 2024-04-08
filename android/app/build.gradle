@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.vyw.nativeobjectdetection"
         minSdkVersion 25
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,6 +31,7 @@ android {
 
     externalNativeBuild {
         cmake {
+            version "3.19.8"
             path "CMakeLists.txt"
         }
     }
@@ -48,7 +49,7 @@ android {
         abi {
             enable true
             reset()
-            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
+            include 'arm64-v8a'
             universalApk false
         }
     }
